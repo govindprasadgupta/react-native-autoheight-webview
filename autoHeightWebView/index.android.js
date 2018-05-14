@@ -225,8 +225,8 @@ export default class AutoHeightWebView extends PureComponent {
         }
       );
     }
-    if (e.nativeEvent.data.substr(0, 4) == 'http'){
-      Linking.openURL(e.nativeEvent.data);
+    if (e.nativeEvent.data){
+      this.onBridgeMessage(e.nativeEvent.data);
     }
   }
 

@@ -229,7 +229,18 @@ export default class AutoHeightWebView extends PureComponent {
     if (url){
       Linking.canOpenURL(url).then(supported => {
         if (supported) {
-          Linking.openURL(url);
+          if (url.includes('_authoring/app-content')) {
+            const urlCompoment = url.split('/');
+            const fileName = urlCompoment[(urlCompoment.length - 1)];
+            const {
+              openInternalLink
+            } = this.props;
+            if (openInternalLink) {
+              openInternalLink(fileName);
+            }
+          } else {
+            Linking.openURL(url);
+          }
         }
       });
     }

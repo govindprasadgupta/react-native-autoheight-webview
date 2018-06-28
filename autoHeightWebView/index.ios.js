@@ -133,15 +133,31 @@ export default class AutoHeightWebView extends PureComponent {
         }
       });
     }
-    Linking.canOpenURL(navState.url).then((supported) => {
+   
+    const navURL = navState.url;
+    Linking.canOpenURL(navURL).then((supported) => {
         if (supported) {
-            this.webview.stopLoading();
-           if(navState.url.startsWith('http')) {
-              Linking.openURL(navState.url);
-           }
+          this.webview.stopLoading();
+          if (navURL.includes('_authoring/app-content')) {
+            const urlCompoment = navURL.split('/');
+            const fileName = urlCompoment[(urlCompoment.length - 1)];
+            const {
+              openInternalLink
+            } = this.props;
+            if (openInternalLink) {
+              openInternalLink(fileName);
+            }
+          } else if (navState.url.startsWith('http')) {
+            Linking.openURL(navState.url);
+          } else if (navState.navigationType && navState.navigationType === 'click') {
+            if (!(navState.url.startsWith('tel') || navState.url.startsWith('mail'))) {
+              const appURL = this.props.baseLVMURL + '/' + navState.url;
+              Linking.openURL(appURL);
+            }
+          }
         }
         return false;
-      });
+      })
   }
 
   render() {
